@@ -10,9 +10,6 @@ importers:
 
   apps/web:
     dependencies:
-      '@frog/shared':
-        specifier: workspace:*
-        version: link:../../packages/shared
       '@google/generative-ai':
         specifier: ^0.24.1
         version: 0.24.1
