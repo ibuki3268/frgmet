@@ -20,21 +20,44 @@ function FrogSprite({ frog }: { frog: Frog }) {
 
   return (
     <div
-      title={`${frog.content}\n寿命: ${frog.lifespan_years.toLocaleString()}年`}
       style={{
         position: "absolute",
         left,
         top,
-        fontSize: style.size,
-        opacity: style.opacity,
-        cursor: "pointer",
-        userSelect: "none",
         transform: "translate(-50%, -50%)",
-        animation: "float 6s ease-in-out infinite",
-        animationDelay: `${Math.random() * 6}s`,
+        display: "flex",
+        flexDirection: "column",
+        alignItems: "center",
+        gap: 4,
       }}
     >
-      {style.emoji}
+      <div
+        title={`${frog.content}\n寿命: ${frog.lifespan_years.toLocaleString()}年`}
+        style={{
+          fontSize: style.size,
+          opacity: style.opacity,
+          cursor: "pointer",
+          userSelect: "none",
+          animation: "float 6s ease-in-out infinite",
+          animationDelay: `${Math.random() * 6}s`,
+        }}
+      >
+        {style.emoji}
+      </div>
+      {frog.reason && (
+        <div
+          style={{
+            fontSize: 10,
+            color: "rgba(255, 255, 255, 0.6)",
+            textAlign: "center",
+            maxWidth: 80,
+            lineHeight: 1.2,
+            textShadow: "0 0 3px #000",
+          }}
+        >
+          {frog.reason}
+        </div>
+      )}
     </div>
   );
 }

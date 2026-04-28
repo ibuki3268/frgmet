@@ -14,6 +14,15 @@ const MOCK = process.env.MOCK_AI === "true";
 export async function POST(req: NextRequest) {
   const { content } = await req.json();
 
+  // ユーザー情報を取得
+  const authHeader = req.headers.get("authorization");
+  let userId: string | null = null;
+  
+  if (authHeader) {
+    const { data } = await supabase.auth.getUser(authHeader.replace("Bearer ", ""));
+    userId = data.user?.id ?? null;
+  }
+
   let judged: { grade: FrogGrade; lifespan_years: number; reason: string };
 
   if (MOCK) {
@@ -38,14 +47,20 @@ export async function POST(req: NextRequest) {
     judged = JSON.parse(text.replace(/```json|```/g, ""));
   }
 
+  const insertData: any = {
+    content,
+    lifespan_years: judged.lifespan_years,
+    grade: judged.grade,
+    reason: judged.reason,
+  };
+
+  if (userId) {
+    insertData.user_id = userId;
+  }
+
   const { data, error } = await supabase
     .from("frogs")
-    .insert({
-      content,
-      lifespan_years: judged.lifespan_years,
-      grade: judged.grade,
-      reason: judged.reason,
-    })
+    .insert(insertData)
     .select()
     .single();
 

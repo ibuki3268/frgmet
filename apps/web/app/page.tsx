@@ -1,16 +1,78 @@
 "use client";
 import { useRef } from "react";
-import { useStarField } from "../hooks/useStarField";
 import Link from "next/link";
+import { useStarField } from "../hooks/useStarField";
+import { useAuth } from "../hooks/useAuth";
 
 export default function Home() {
   const canvasRef = useRef<HTMLCanvasElement>(null);
+  const { user, loading, logout } = useAuth();
   useStarField(canvasRef);
 
   return (
     <main style={{ width: "100vw", height: "100vh", overflow: "hidden", background: "#000", position: "relative" }}>
       <div style={{ position: "absolute", inset: 0, background: "radial-gradient(ellipse at center, #0a0a2e 0%, #000 100%)" }} />
       <canvas ref={canvasRef} style={{ position: "absolute", inset: 0 }} />
+
+      <div style={{
+        position: "absolute",
+        top: 24,
+        right: 24,
+        display: "flex",
+        gap: 12,
+        alignItems: "center",
+        zIndex: 10,
+      }}>
+        {loading ? (
+          <span style={{ color: "#666", fontSize: 13 }}>読込中...</span>
+        ) : user ? (
+          <>
+            <span style={{ color: "#aaa", fontSize: 13 }}>{user.email?.split("@")[0] || "ユーザー"}</span>
+            <Link href="/mypage" style={{
+              padding: "6px 12px",
+              borderRadius: 6,
+              background: "#222",
+              color: "#aaa",
+              fontSize: 12,
+              textDecoration: "none",
+              transition: "background 0.2s, color 0.2s",
+              cursor: "pointer",
+              display: "inline-block",
+            }} onMouseEnter={(e) => { e.currentTarget.style.background = "#333"; e.currentTarget.style.color = "#fff"; }} onMouseLeave={(e) => { e.currentTarget.style.background = "#222"; e.currentTarget.style.color = "#aaa"; }}>
+              マイページ
+            </Link>
+            <button
+              onClick={logout}
+              style={{
+                padding: "6px 12px",
+                borderRadius: 6,
+                background: "transparent",
+                border: "1px solid #444",
+                color: "#888",
+                fontSize: 12,
+                cursor: "pointer",
+                transition: "color 0.2s, border 0.2s",
+              }}
+              onMouseEnter={(e) => { e.currentTarget.style.color = "#ff6b6b"; e.currentTarget.style.borderColor = "#ff6b6b"; }}
+              onMouseLeave={(e) => { e.currentTarget.style.color = "#888"; e.currentTarget.style.borderColor = "#444"; }}
+            >
+              ログアウト
+            </button>
+          </>
+        ) : (
+          <Link href="/login" style={{
+            padding: "6px 12px",
+            borderRadius: 6,
+            background: "#1a3a6b",
+            color: "#fff",
+            fontSize: 12,
+            textDecoration: "none",
+            display: "inline-block",
+          }}>
+            ログイン
+          </Link>
+        )}
+      </div>
 
       <div style={{
         position: "absolute",
