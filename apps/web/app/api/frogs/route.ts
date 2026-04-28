@@ -1,13 +1,29 @@
 import { NextRequest, NextResponse } from "next/server";
 import { createClient } from "@supabase/supabase-js";
-import type { Frog } from "@frog/shared";
+import type { Frog } from "@/types/frog";
 
 const supabase = createClient(
   process.env.NEXT_PUBLIC_SUPABASE_URL!,
   process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
 );
 
-export async function GET() {
+export async function GET(req: NextRequest) {
+  const random = req.nextUrl.searchParams.get("random");
+
+  if (random === "true") {
+    const { data, error } = await supabase
+      .from("frogs")
+      .select("*")
+      .in("grade", ["weak", "alive", "immortal"])
+      .limit(100);
+
+    if (error) return NextResponse.json({ error: error.message }, { status: 500 });
+    if (!data || data.length === 0) return NextResponse.json(null);
+
+    const picked = data[Math.floor(Math.random() * data.length)];
+    return NextResponse.json(picked);
+  }
+
   const { data, error } = await supabase
     .from("frogs")
     .select("*")
