@@ -1,6 +1,6 @@
 import { useEffect, useRef } from "react";
 
-export function useStarField(canvasRef: React.RefObject<HTMLCanvasElement>) {
+export function useStarField(canvasRef: React.RefObject<HTMLCanvasElement | null>) {
   useEffect(() => {
     const canvas = canvasRef.current;
     if (!canvas) return;
